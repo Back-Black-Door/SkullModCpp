@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     printf("  \\___ \\  | |/ / | | | | | | | | | |\\/| |  / _ \\   / _` | |_   _| |_   _|\n");
     printf("  ____) | |   <  | |_| | | | | | | |  | | | (_) | | (_| |   |_|     |_|  \n");
     printf(" |_____/  |_|\\_\\  \\__,_| |_| |_| |_|  |_|  \\___/   \\____|                \n\n");
-    printf("Version: 0.1 \n");
+    printf("Version: 0.2 \n");
     printf("Original program made by 0xFAIL\n");
     printf("The C++ version is made by ImpDi\n\n");
     if (argc == 1) {

@@ -6,11 +6,6 @@
 #include <string>
 #include "gfs.h"
 
-
-//====================
-
-
-
 //-----------------------
 
 int main(int argc, char* argv[])
@@ -33,10 +28,13 @@ int main(int argc, char* argv[])
         std::cout << "File Read Path:" << fileread << '\n';
         GFS gfs(fileread);
         if (fileread.extension() == "") {
+            std::cout << "File Write Path:" << fileread.replace_extension(".gfs") << '\n';
             gfs.write_GFS(fileread.replace_extension(".gfs"));
+            
         }
         else {
+            std::cout << "File Write Path:" << fileread.replace_extension("") << '\n';
             gfs.write_GFS(fileread.replace_extension(""));
         }
-    }
+    } //for
 } //main

@@ -100,21 +100,18 @@ GFS::GFS(std::filesystem::path pathtoread) {
                 BytesOffsetMETA += file_MetaData[i].size();
             }
 
-            file.seekg(0, std::ios::end);
-            std::streamsize size = file.tellg();
-            size =- header.dataOffset;
-            file.seekg(header.dataOffset, std::ios::beg);
-
-            std::vector<unsigned char> bufferfiledata(size);
-
-            file.read(reinterpret_cast<char*>(bufferfiledata.data()), size);
-
 
             //File_Data Reader
             int BytesOffsetDATA{ 0 };
             for (size_t i{ 0 }; i < header.number_of_files; i++) {
 
-                std::vector<unsigned char> i_File_Data = readBuffer_VectorUnChar_to_VectorUnChar(bufferfiledata,BytesOffsetDATA,file_MetaData[i].file_length);
+                file.seekg(header.dataOffset + BytesOffsetDATA, std::ios::beg);
+
+                std::vector<unsigned char> bufferfiledata(file_MetaData[i].file_length);
+
+                file.read(reinterpret_cast<char*>(bufferfiledata.data()), file_MetaData[i].file_length);
+
+                std::vector<unsigned char> i_File_Data = readBuffer_VectorUnChar_to_VectorUnChar(bufferfiledata,0,file_MetaData[i].file_length);
                 file_FileData.push_back(i_File_Data);
                 BytesOffsetDATA += file_MetaData[i].file_length;
             }

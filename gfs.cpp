@@ -58,34 +58,36 @@ GFS::GFS(std::filesystem::path pathtoread) {
             try
             {
             
-            file.seekg(0, std::ios::end);
-            std::streamsize size = file.tellg();
             file.seekg(0, std::ios::beg); 
 
             
-            std::vector<unsigned char> buffer(size); // Создаем вектор для хранения байтов
+            std::vector<unsigned char> bufferheader(0x33); // Создаем вектор для хранения байтов
 
             
 
-            file.read(reinterpret_cast<char*>(buffer.data()), size); // Читаем данные из файла
+            file.read(reinterpret_cast<char*>(bufferheader.data()), 0x33); // Читаем данные из файла
 
             //header Read
-            header.dataOffset = readBuffer_VectorUnChar_to_UnInt32(buffer,0);
-            header.file_identifier_length = readBuffer_VectorUnChar_to_UnInt64(buffer, 4);
-            header.file_identifier = readBuffer_VectorUnChar_to_VectorUnChar(buffer, 12, header.file_identifier_length);
-            header.file_version_lenght = readBuffer_VectorUnChar_to_UnInt64(buffer, (12 + header.file_identifier_length));
-            header.file_version = readBuffer_VectorUnChar_to_VectorUnChar(buffer, (12 + header.file_identifier_length + 8), header.file_version_lenght);
-            header.number_of_files = readBuffer_VectorUnChar_to_UnInt64(buffer, (12 + header.file_identifier_length + 8 + header.file_version_lenght));
+            header.dataOffset = readBuffer_VectorUnChar_to_UnInt32(bufferheader,0);
+            header.file_identifier_length = readBuffer_VectorUnChar_to_UnInt64(bufferheader, 4);
+            header.file_identifier = readBuffer_VectorUnChar_to_VectorUnChar(bufferheader, 12, header.file_identifier_length);
+            header.file_version_lenght = readBuffer_VectorUnChar_to_UnInt64(bufferheader, (12 + header.file_identifier_length));
+            header.file_version = readBuffer_VectorUnChar_to_VectorUnChar(bufferheader, (12 + header.file_identifier_length + 8), header.file_version_lenght);
+            header.number_of_files = readBuffer_VectorUnChar_to_UnInt64(bufferheader, (12 + header.file_identifier_length + 8 + header.file_version_lenght));
             
+            file.seekg(0x33, std::ios::beg);
+            std::vector<unsigned char> bufferfilemeta(header.dataOffset - 0x33);
+            file.read(reinterpret_cast<char*>(bufferfilemeta.data()), header.dataOffset - 0x33);
+
             //Meta_Info Reader
             int BytesOffsetMETA{0};
             for (size_t i{ 0 }; i < header.number_of_files; i++) {
                 
                 unsigned __int64 i_file_path_length
-                    = readBuffer_VectorUnChar_to_UnInt64(buffer, (header.size() + BytesOffsetMETA));
-                std::vector<unsigned char> i_reference_path = readBuffer_VectorUnChar_to_VectorUnChar(buffer, header.size() + BytesOffsetMETA +  8 , i_file_path_length );
-                unsigned __int64 i_file_length = readBuffer_VectorUnChar_to_UnInt64(buffer, (header.size() + BytesOffsetMETA + 8 + i_file_path_length));
-                unsigned __int32 i_file_alignment = readBuffer_VectorUnChar_to_UnInt32(buffer, (header.size() + BytesOffsetMETA + 8 + i_file_path_length + 8));
+                    = readBuffer_VectorUnChar_to_UnInt64(bufferfilemeta, (BytesOffsetMETA));
+                std::vector<unsigned char> i_reference_path = readBuffer_VectorUnChar_to_VectorUnChar(bufferfilemeta, BytesOffsetMETA +  8 , i_file_path_length );
+                unsigned __int64 i_file_length = readBuffer_VectorUnChar_to_UnInt64(bufferfilemeta, (BytesOffsetMETA + 8 + i_file_path_length));
+                unsigned __int32 i_file_alignment = readBuffer_VectorUnChar_to_UnInt32(bufferfilemeta, (BytesOffsetMETA + 8 + i_file_path_length + 8));
 
                 FileInfStruct i_struct
                 { i_file_path_length,     
@@ -98,11 +100,21 @@ GFS::GFS(std::filesystem::path pathtoread) {
                 BytesOffsetMETA += file_MetaData[i].size();
             }
 
+            file.seekg(0, std::ios::end);
+            std::streamsize size = file.tellg();
+            size =- header.dataOffset;
+            file.seekg(header.dataOffset, std::ios::beg);
+
+            std::vector<unsigned char> bufferfiledata(size);
+
+            file.read(reinterpret_cast<char*>(bufferfiledata.data()), size);
+
+
             //File_Data Reader
             int BytesOffsetDATA{ 0 };
             for (size_t i{ 0 }; i < header.number_of_files; i++) {
 
-                std::vector<unsigned char> i_File_Data = readBuffer_VectorUnChar_to_VectorUnChar(buffer,(header.dataOffset + BytesOffsetDATA),file_MetaData[i].file_length);           
+                std::vector<unsigned char> i_File_Data = readBuffer_VectorUnChar_to_VectorUnChar(bufferfiledata,BytesOffsetDATA,file_MetaData[i].file_length);
                 file_FileData.push_back(i_File_Data);
                 BytesOffsetDATA += file_MetaData[i].file_length;
             }

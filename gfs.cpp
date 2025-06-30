@@ -11,8 +11,11 @@ GFS::GFS(std::filesystem::path pathtoread) {
 	if (pathtoread.extension() == "") {
         std::cout << "We are read folder?" << '\n';
         for (const std::filesystem::directory_entry& dir_entry : std::filesystem::recursive_directory_iterator(pathtoread)) {
+
             if (dir_entry.is_regular_file()) {
                 
+                
+
                 std::string pathString = dir_entry.path().generic_string().erase(0, pathtoread.generic_string().size() + 1);
                 std::vector<unsigned char> i_file_path(pathString.begin(), pathString.end());
 
@@ -50,17 +53,20 @@ GFS::GFS(std::filesystem::path pathtoread) {
         std::cout << "We are read file?" << '\n';
 
         std::ifstream file(pathtoread, std::ifstream::binary); // Открываем файл в бинарном режиме
+        
         if (file.is_open()) {
             try
             {
+            
             file.seekg(0, std::ios::end);
             std::streamsize size = file.tellg();
-            file.seekg(0, std::ios::beg);
-
-
-            std::vector<unsigned char> buffer(size);             // Создаем вектор для хранения байтов
+            file.seekg(0, std::ios::beg); 
 
             
+            std::vector<unsigned char> buffer(size); // Создаем вектор для хранения байтов
+
+            
+
             file.read(reinterpret_cast<char*>(buffer.data()), size); // Читаем данные из файла
 
             //header Read

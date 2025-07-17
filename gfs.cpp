@@ -216,13 +216,11 @@ int GFS::FileInfStruct::size() {
     return (8 + file_path_length + 8 + 4);
 }
 
-
-
 void GFS::print_file_FileData(int index) {
     std::cout << "File Data: " << '\n';
     std::cout << '\n';
     for (unsigned char n : file_FileData[index]) {
         std::cout << n;
     }
-
+    
 }

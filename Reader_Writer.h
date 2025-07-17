@@ -10,3 +10,8 @@ std::vector<unsigned char> convert_UnInt32_to_VectorChar(unsigned __int32 UNInt)
 
 std::vector<unsigned char> convert_UnInt64_to_VectorChar(unsigned __int64 UNInt);
 
+unsigned int readCharArray_to_UnInt(char buffer[]);
+
+uint32_t swap_endian_32(uint32_t num);
+
+uint64_t swap_endian_64(uint64_t num);

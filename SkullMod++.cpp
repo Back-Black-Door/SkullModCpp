@@ -26,15 +26,17 @@ int main(int argc, char* argv[])
     for (int i{ 1 }; i < argc; i++) {
         std::filesystem::path fileread = argv[i];
         std::cout << "File Read Path:" << fileread << '\n';
-        GFS gfs(fileread);
+        //GFS gfs(fileread);
+        
         if (fileread.extension() == "") {
+            GFS  gfs{ fileread };
             std::cout << "File Write Path:" << fileread.replace_extension(".gfs") << '\n';
             gfs.write_GFS(fileread.replace_extension(".gfs"));
             
         }
         else {
-            std::cout << "File Write Path:" << fileread.replace_extension("") << '\n';
-            gfs.write_GFS(fileread.replace_extension(""));
+            GFSUnpacker GFSUnpack;
+            GFSUnpack(fileread);
         }
     } //for
 } //main

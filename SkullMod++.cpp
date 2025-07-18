@@ -16,27 +16,30 @@ int main(int argc, char* argv[])
     printf("  \\___ \\  | |/ / | | | | | | | | | |\\/| |  / _ \\   / _` | |_   _| |_   _|\n");
     printf("  ____) | |   <  | |_| | | | | | | |  | | | (_) | | (_| |   |_|     |_|  \n");
     printf(" |_____/  |_|\\_\\  \\__,_| |_| |_| |_|  |_|  \\___/   \\____|                \n\n");
-    printf("Version: 0.2 \n");
+    printf("Version: 0.3 \n");
     printf("Original program made by 0xFAIL\n");
     printf("The C++ version is made by ImpDi\n\n");
     if (argc == 1) {
         std::cout << "There are no files" << '\n';
         return 0;
     }
+    GFSUnpacker GFSUnpack;
+    GFSPacker GFSpack;
     for (int i{ 1 }; i < argc; i++) {
         std::filesystem::path fileread = argv[i];
         std::cout << "File Read Path:" << fileread << '\n';
         //GFS gfs(fileread);
         
         if (fileread.extension() == "") {
-            GFS  gfs{ fileread };
-            std::cout << "File Write Path:" << fileread.replace_extension(".gfs") << '\n';
-            gfs.write_GFS(fileread.replace_extension(".gfs"));
-            
+            GFSpack(fileread);
         }
         else {
-            GFSUnpacker GFSUnpack;
             GFSUnpack(fileread);
         }
     } //for
 } //main
+
+int test() {
+	GFSPacker GFSPack;
+	GFSPack("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Skullgirls\\data01\\core");
+}

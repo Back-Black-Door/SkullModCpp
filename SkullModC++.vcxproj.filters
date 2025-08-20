@@ -21,10 +21,30 @@
     <ClCompile Include="SkullMod++.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gbs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="reader_writer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gfs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gbs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="reader_writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="todo.md">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include=".gitignore">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

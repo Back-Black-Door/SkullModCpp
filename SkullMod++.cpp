@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
  |_____/|_|\_\\__,_|_|_|_|  |_|\___/ \__,_|\_____|                                                                                             
 )" << std::endl;
 
-    std::cout << "Version: 0.5" << "\n";
+    std::cout << "Version: 0.6" << "\n";
     std::cout << "Original program made by 0xFAIL" << "\n";
     std::cout << "The C++ version is made by ImpDi" << "\n";
     std::cout << '\n';
@@ -48,4 +48,3 @@ int main(int argc, char* argv[])
         }
     } //for
 } //main
-

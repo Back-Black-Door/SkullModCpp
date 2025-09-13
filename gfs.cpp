@@ -213,6 +213,41 @@ void GFSEdit::extract_file(const std::string& relative_path_in_archive, const fs
     CloseHandle(ext_FILE);
 }
 
+void GFSEdit::extract_files(const fs::path& output_path, const std::string& relative_path_in_archive) {
+    // Нормализуем путь для сравнения: добавляем / в конец если это папка
+    std::string search_path = relative_path_in_archive;
+    if (!search_path.empty() && search_path.back() != '/') {
+        search_path += '/';
+    }
+
+    for (const auto& meta : files_meta_data) {
+        // Проверяем принадлежность к целевой директории
+        if (search_path.empty() ||
+            meta.relative_path == relative_path_in_archive ||
+            (meta.relative_path.size() > search_path.size() &&
+                meta.relative_path.substr(0, search_path.size()) == search_path)) {
+
+            // Формируем полный путь для извлечения
+            fs::path full_output_path = output_path;
+            if (!search_path.empty()) {
+                // Убираем префикс родительской директории из пути
+                std::string relative_part = meta.relative_path.substr(search_path.size());
+                full_output_path /= relative_part;
+            }
+            else {
+                full_output_path /= meta.relative_path;
+            }
+
+            try {
+                extract_file(meta.relative_path, full_output_path);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error extracting file " << meta.relative_path << ": " << e.what() << std::endl;
+            }
+        }
+    }
+}
+
 void GFSEdit::commit_changes() {
     if (pending_changes.empty()) return;
 
